@@ -28,6 +28,7 @@ var Beer = mongoose.model('Beer', BeerSchema);
 http.createServer(function (req, res) {
   var url = req.url;
   res.writeHead(200, {'Content-Type': 'text/plain'});
+
   switch(url) {
     case '/beer/create':
       var dados = {
@@ -69,6 +70,20 @@ http.createServer(function (req, res) {
 
         res.end(JSON.stringify(beers));
       });
+      break;
+
+    case '/beer/delete':
+      var query = {name: 'Heineken'};
+      var mod = {alcohol: 999 };
+
+      Beer.remove(query, function (err, beers) {
+        if (err){
+          console.log('Erro: ', err);
+        }
+
+        res.end(JSON.stringify(beers));
+      });
+
       break;
 
     default:
