@@ -43,7 +43,17 @@ Beer.findOne(function (err, beers) {
   if(err) {
     console.log(err);
   } else {
-    console.log("Cerveja encontrada: ", beers);
+    console.log("Cerveja encontrada com sucesso");
   }
 });
 
+var query = {name: 'Heineken'};
+var mod = {alcohol: 666};
+
+Beer.update(query, mod, function (err, beers) {
+  if (err) {
+    console.log('Erro: ', err);
+  } else {
+    console.log('Cerveja atualizada com sucesso');
+  }
+});
