@@ -27,7 +27,7 @@ var Beer = mongoose.model('Beer', BeerSchema);
 
 http.createServer(function (req, res) {
   var url = req.url;
-
+  res.writeHead(200, {'Content-Type': 'text/plain'});
   switch(url) {
     case '/beer/create':
       var dados = {
@@ -44,13 +44,34 @@ http.createServer(function (req, res) {
           console.log('Erro: ', err);
         }
 
-        res.writeHead(200, {'Content-Type': 'text/plain'});
-        res.end('Hello World\n');
+        res.end(JSON.stringify(data));
+      });
+      break;
+
+    case '/beer/find':
+      Beer.find(function (err, beers) {
+        if(err) {
+          console.log('Erro: ', err);
+        }
+
+        res.end(JSON.stringify(beers));
+      });
+      break;
+
+    case '/beer/update':
+      var query = {name: 'Heineken'};
+      var mod = {alcohol: 999 };
+
+      Beer.update(query, mod, function (err, beers) {
+        if (err) {
+          console.log('Erro: ', err);
+        }
+
+        res.end(JSON.stringify(beers));
       });
       break;
 
     default:
-      res.writeHead(401, {'Content-Type': 'text/plain'});
       res.end('not found');
 
     //case '/retrieve':
