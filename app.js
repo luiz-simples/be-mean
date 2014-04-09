@@ -25,81 +25,85 @@ var BeerSchema = new Schema({
 
 var Beer = mongoose.model('Beer', BeerSchema);
 
+var _create = function(res) {
+  var dados = {
+    name: 'Heineken',
+    description: 'Até q eh boazinha',
+    alcohol: 5.5,
+    category: 'lager'
+  }
+
+  var model = new Beer(dados);
+
+  model.save(function (err, data) {
+    if (err) {
+      console.log('Erro: ', err);
+    }
+
+    res.end(JSON.stringify(data));
+  });
+};
+
+var _update = function(res) {
+  var query = {name: 'Heineken'};
+  var mod = {alcohol: 999 };
+
+  Beer.update(query, mod, function (err, beers) {
+    if (err) {
+      console.log('Erro: ', err);
+    }
+
+    res.end(JSON.stringify(beers));
+  });
+};
+
+var _delete = function(res) {
+  var query = {name: 'Heineken'};
+  var mod = {alcohol: 999 };
+
+  Beer.remove(query, function (err, beers) {
+    if (err){
+      console.log('Erro: ', err);
+    }
+
+    res.end(JSON.stringify(beers));
+  });
+};
+
+_find = function(res) {
+  Beer.find(function (err, beers) {
+    if(err) {
+      console.log('Erro: ', err);
+    }
+
+    res.end(JSON.stringify(beers));
+  });
+};
+
 http.createServer(function (req, res) {
   var url = req.url;
+
   res.writeHead(200, {'Content-Type': 'text/plain'});
 
   switch(url) {
     case '/beer/create':
-      var dados = {
-        name: 'Heineken',
-        description: 'Até q eh boazinha',
-        alcohol: 5.5,
-        category: 'lager'
-      }
-
-      var model = new Beer(dados);
-
-      model.save(function (err, data) {
-        if (err) {
-          console.log('Erro: ', err);
-        }
-
-        res.end(JSON.stringify(data));
-      });
+      _create(res);
       break;
 
     case '/beer/find':
-      Beer.find(function (err, beers) {
-        if(err) {
-          console.log('Erro: ', err);
-        }
-
-        res.end(JSON.stringify(beers));
-      });
+      _find(res);
       break;
 
     case '/beer/update':
-      var query = {name: 'Heineken'};
-      var mod = {alcohol: 999 };
-
-      Beer.update(query, mod, function (err, beers) {
-        if (err) {
-          console.log('Erro: ', err);
-        }
-
-        res.end(JSON.stringify(beers));
-      });
+      _update(res);
       break;
 
     case '/beer/delete':
-      var query = {name: 'Heineken'};
-      var mod = {alcohol: 999 };
-
-      Beer.remove(query, function (err, beers) {
-        if (err){
-          console.log('Erro: ', err);
-        }
-
-        res.end(JSON.stringify(beers));
-      });
-
+      _delete(res);
       break;
 
     default:
       res.end('not found');
-
-    //case '/retrieve':
-    //  Beer.retrieve(request, response);
-    //  break;
-
-    //case '/update':
-    //  Beer.update(request, response);
-    //  break;
-
-    //case '/delete':
-    //  Beer.delete(request, response);
-    //  break;
   }
 }).listen(1337, '127.0.0.1');
 
